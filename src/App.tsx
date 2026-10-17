@@ -4,7 +4,7 @@ import { audio } from "./game/audio";
 import { GameCanvas, type GameHandle, type GameStats } from "./game/GameCanvas";
 import { claimStatus, clearSave, defaultSave, loadSave, persistSave } from "./game/storage";
 import type { LevelConfig, RunResult, SaveData, ScreenName, ShopItem } from "./game/types";
-import { ChestIcon, CoinIcon, FruitIcon, JarIcon, LockIcon, PowerIcon, SceneArt, StarIcon } from "./components/Art";
+import { ChestIcon, CoinIcon, FruitIcon, JarIcon, LockIcon, PowerIcon, SceneArt, StarIcon, SoundIcon, MusicIcon, VibrateIcon, PolicyIcon } from "./components/Art";
 import splashImg from "./assets/splash_img.png";
 
 type ShopCategory = keyof typeof SKINS;
@@ -607,12 +607,58 @@ function App() {
     <Screen name="settings" active={screen === "settings"}>
       <SceneArt scene="kitchen" className="scene-art" />
       <header className="screen-header simple-header"><IconButton label="Back" onClick={() => go("home")}><ArrowIcon /></IconButton><h1>Settings</h1><span /></header>
-      <div className="settings-content"><div className="settings-mascot"><FruitIcon level={2} skin={save.equipped.fruit} /><h2>Make it yours</h2></div>
-        {(["sound", "music", "vibration"] as const).map((setting) => <button className="setting-row" key={setting} onClick={() => updateSetting(setting)}><span className={`setting-picture ${setting}`}><i /></span><span><strong>{setting[0].toUpperCase() + setting.slice(1)}</strong><small>{setting === "vibration" ? "Gentle haptic feedback" : `${setting} effects`}</small></span><i className={`toggle ${save.settings[setting] ? "on" : ""}`}><b /></i></button>)}
-        <AppButton tone="cream" onClick={() => setOverlay("privacy")}>Privacy Policy</AppButton>
-        <AppButton tone="cream" onClick={() => go("how")}>Replay tutorial</AppButton>
-        <button className="reset-button" onClick={() => setOverlay("reset")}>Reset all progress</button>
-        <p className="version">Orchardly v1.0 - Offline edition</p>
+      <div className="settings-content">
+        <div className="settings-glass-panel">
+          <div className="settings-mascot">
+            <FruitIcon level={2} skin={save.equipped.fruit} />
+            <div className="settings-mascot-text">
+              <h2>Make it yours</h2>
+              <p>Audio, haptics & privacy options</p>
+            </div>
+          </div>
+
+          <div className="settings-items">
+            <button className="setting-card-row" onClick={() => updateSetting("sound")}>
+              <div className="setting-card-icon sound-bg"><SoundIcon /></div>
+              <div className="setting-card-info">
+                <strong>Sound Effects</strong>
+                <small>Pops, merges, drops & UI sounds</small>
+              </div>
+              <i className={`toggle ${save.settings.sound ? "on" : ""}`}><b /></i>
+            </button>
+
+            <button className="setting-card-row" onClick={() => updateSetting("music")}>
+              <div className="setting-card-icon music-bg"><MusicIcon /></div>
+              <div className="setting-card-info">
+                <strong>Background Music</strong>
+                <small>Relaxing chill acoustic melodies</small>
+              </div>
+              <i className={`toggle ${save.settings.music ? "on" : ""}`}><b /></i>
+            </button>
+
+            <button className="setting-card-row" onClick={() => updateSetting("vibration")}>
+              <div className="setting-card-icon vibrate-bg"><VibrateIcon /></div>
+              <div className="setting-card-info">
+                <strong>Haptic Vibration</strong>
+                <small>Gentle tactile drop & merge pulses</small>
+              </div>
+              <i className={`toggle ${save.settings.vibration ? "on" : ""}`}><b /></i>
+            </button>
+          </div>
+
+          <div className="settings-actions">
+            <button className="settings-action-btn privacy-action" onClick={() => setOverlay("privacy")}>
+              <span className="action-btn-icon"><PolicyIcon /></span>
+              <span>Privacy Policy</span>
+            </button>
+            <button className="settings-action-btn tutorial-action" onClick={() => go("how")}>
+              <span>📖 Replay Tutorial</span>
+            </button>
+          </div>
+
+          <button className="reset-button" onClick={() => setOverlay("reset")}>Reset all progress</button>
+          <p className="version">Orchardly v1.0.2 - Offline edition</p>
+        </div>
       </div>
     </Screen>
 

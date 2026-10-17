@@ -196,11 +196,11 @@ export const GameCanvas = forwardRef<GameHandle, Props>(function GameCanvas(
       initial.height = rect.height;
       initial.scale = Math.max(.55, Math.min(1.35, rect.width / 390));
       initial.bounds = {
-        left: rect.width * .08,
-        right: rect.width * .92,
-        top: rect.height * .17,
-        bottom: rect.height * .835,
-        danger: rect.height * .29,
+        left: rect.width * .07,
+        right: rect.width * .93,
+        top: rect.height * .16,
+        bottom: rect.height * .77,
+        danger: rect.height * .28,
       };
       if (previousBounds.right > previousBounds.left && previousBounds.bottom > previousBounds.top) {
         const sizeRatio = initial.scale / previousScale;

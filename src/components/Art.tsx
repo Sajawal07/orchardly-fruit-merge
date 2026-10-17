@@ -62,6 +62,47 @@ export function LockIcon({ className = "" }: IconProps) {
   return <svg className={className} viewBox="0 0 64 64" aria-hidden="true"><path d="M19 29 V22 Q19 9 32 9 Q45 9 45 22 V29" fill="none" stroke="#726d70" strokeWidth="7"/><rect x="12" y="27" width="40" height="31" rx="9" fill="#aaa5a8" stroke="#625c61" strokeWidth="4"/><circle cx="32" cy="41" r="5" fill="#625c61"/><path d="M32 44 v8" stroke="#625c61" strokeWidth="5"/></svg>;
 }
 
+export function SoundIcon({ className = "" }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M12 24 h10 l16 -12 v40 l-16 -12 h-10 z" fill="#ffd166" stroke="#71411f" strokeWidth="4" strokeLinejoin="round" />
+      <path d="M46 22 Q54 32 46 42" fill="none" stroke="#71411f" strokeWidth="4" strokeLinecap="round" />
+      <path d="M52 16 Q64 32 52 48" fill="none" stroke="#71411f" strokeWidth="4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function MusicIcon({ className = "" }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 64 64" aria-hidden="true">
+      <ellipse cx="20" cy="46" rx="8" ry="6" fill="#ffd166" stroke="#71411f" strokeWidth="4" />
+      <ellipse cx="44" cy="40" rx="8" ry="6" fill="#ffd166" stroke="#71411f" strokeWidth="4" />
+      <path d="M28 46 V18 L52 12 V40" fill="none" stroke="#71411f" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M28 24 L52 18" stroke="#71411f" strokeWidth="4" />
+    </svg>
+  );
+}
+
+export function VibrateIcon({ className = "" }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 64 64" aria-hidden="true">
+      <rect x="22" y="10" width="20" height="44" rx="6" fill="#ffd166" stroke="#71411f" strokeWidth="4" />
+      <line x1="28" y1="16" x2="36" y2="16" stroke="#71411f" strokeWidth="3" strokeLinecap="round" />
+      <circle cx="32" cy="47" r="2.5" fill="#71411f" />
+      <path d="M13 22 Q8 32 13 42 M51 22 Q56 32 51 42" fill="none" stroke="#71411f" strokeWidth="4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function PolicyIcon({ className = "" }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M32 6 L50 14 V32 Q50 48 32 58 Q14 48 14 32 V14 Z" fill="#ffd166" stroke="#71411f" strokeWidth="4" strokeLinejoin="round" />
+      <path d="M24 32 L30 38 L42 24" fill="none" stroke="#327a48" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function ChestIcon({ className = "", gold = false }: IconProps & { gold?: boolean }) {
   return <svg className={className} viewBox="0 0 100 80" aria-hidden="true"><path d="M12 33 Q14 9 34 8 H66 Q87 10 88 33" fill={gold ? "#ffd958" : "#b8783d"} stroke="#71411f" strokeWidth="6"/><path d="M9 31 H91 V70 Q91 76 84 76 H16 Q9 76 9 69 Z" fill={gold ? "#f1aa2d" : "#9a5e32"} stroke="#71411f" strokeWidth="6"/><path d="M9 42 H91 M28 9 V75 M72 9 V75" stroke={gold ? "#fff083" : "#d99a54"} strokeWidth="5"/><rect x="42" y="34" width="16" height="22" rx="4" fill="#fff08a" stroke="#8c561f" strokeWidth="4"/><circle cx="50" cy="43" r="3" fill="#8c561f"/></svg>;
 }
