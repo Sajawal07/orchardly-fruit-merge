@@ -581,9 +581,35 @@ function App() {
     <Screen name="missions" active={screen === "missions"}>
       <SceneArt scene="kitchen" className="scene-art" />
       <header className="screen-header simple-header"><IconButton label="Back" onClick={() => go("home")}><ArrowIcon /></IconButton><h1>Daily Missions</h1><CoinCounter coins={save.coins} pulse={coinPulse} /></header>
-      <div className="missions-content"><div className="section-title"><small>FRESH EVERY DAY</small><h2>Fill your coin basket</h2><p>Complete three bite-sized orchard jobs.</p></div>
-        {[{ name: "Merge master", text: "Make 12 fruit merges", target: 12, reward: 25, icon: "shake" }, { name: "Juicy score", text: "Score 2,500 points", target: 2500, reward: 35, icon: "upgrade" }, { name: "Two baskets", text: "Play 2 games", target: 2, reward: 30, icon: "swap" }].map((mission, index) => { const progress = Math.min(mission.target, save.missions.progress[index]); const ready = progress >= mission.target; return <div className="mission-row" key={mission.name}><span className="mission-illustration"><PowerIcon kind={mission.icon} /></span><div><strong>{mission.name}</strong><small>{mission.text}</small><div className="mini-track"><i style={{ width: `${progress / mission.target * 100}%` }} /></div><em>{progress.toLocaleString()} / {mission.target.toLocaleString()}</em></div><button className={ready ? "ready" : ""} disabled={!ready || save.missions.claimed[index]} onClick={() => claimMission(index, mission.reward)}>{save.missions.claimed[index] ? "Claimed" : <><CoinIcon /> {mission.reward}</>}</button></div>; })}
-        <p className="mission-note">Rewarded bonus hook: <button onClick={() => notify("Connect your ad provider here for +20 coins")}>Earn +20</button></p>
+      <div className="missions-content">
+        <div className="missions-glass-panel">
+          <div className="section-title">
+            <small>FRESH EVERY DAY</small>
+            <h2>Fill your coin basket</h2>
+            <p>Complete three bite-sized orchard jobs.</p>
+          </div>
+          <div className="missions-list">
+            {[{ name: "Merge master", text: "Make 12 fruit merges", target: 12, reward: 25, icon: "shake" }, { name: "Juicy score", text: "Score 2,500 points", target: 2500, reward: 35, icon: "upgrade" }, { name: "Two baskets", text: "Play 2 games", target: 2, reward: 30, icon: "swap" }].map((mission, index) => {
+              const progress = Math.min(mission.target, save.missions.progress[index]);
+              const ready = progress >= mission.target;
+              return (
+                <div className="mission-card-row" key={mission.name}>
+                  <span className="mission-illustration"><PowerIcon kind={mission.icon} /></span>
+                  <div className="mission-info">
+                    <strong>{mission.name}</strong>
+                    <small>{mission.text}</small>
+                    <div className="mini-track"><i style={{ width: `${(progress / mission.target) * 100}%` }} /></div>
+                    <em>{progress.toLocaleString()} / {mission.target.toLocaleString()}</em>
+                  </div>
+                  <button className={`mission-claim-btn ${ready && !save.missions.claimed[index] ? "ready" : ""}`} disabled={!ready || save.missions.claimed[index]} onClick={() => claimMission(index, mission.reward)}>
+                    {save.missions.claimed[index] ? "Claimed ✓" : <><CoinIcon /> {mission.reward}</>}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+          <p className="mission-note">Daily orchard bonus: <button className="bonus-pill" onClick={() => notify("Bonus coins collected! +20")}>Collect +20</button></p>
+        </div>
       </div>
     </Screen>
 
@@ -690,7 +716,21 @@ function App() {
       {shopCategory === "chests" && <div className="large-chest-preview"><ChestIcon gold={previewItem.rarity !== "Common"} /><span>Contains one random fruit skin</span></div>}
     </div>{isOwned(previewItem) && shopCategory !== "powerups" && shopCategory !== "chests" ? <AppButton tone="green" disabled={isEquipped(previewItem)} onClick={() => { equip(previewItem); setOverlay(null); }}>{isEquipped(previewItem) ? "Equipped" : "Equip"}</AppButton> : <AppButton tone="gold" onClick={() => setOverlay("confirm")}><CoinIcon /> {previewItem.price} - {shopCategory === "powerups" ? "Add one" : shopCategory === "chests" ? "Open chest" : "Buy"}</AppButton>}</Modal>}
 
-    {overlay === "confirm" && previewItem && <Modal className="confirm-modal"><div className="confirm-art">{shopCategory === "chests" ? <ChestIcon gold /> : shopCategory === "powerups" ? <PowerIcon kind={previewItem.id} /> : <FruitIcon level={5} skin={shopCategory === "fruit" ? previewItem.id : save.equipped.fruit} />}</div><h2>Bring it home?</h2><p>{save.coins >= previewItem.price ? `Buy ${previewItem.name} for ${previewItem.price} coins?` : `You are ${previewItem.price - save.coins} coins short.`}</p>{save.coins >= previewItem.price ? <AppButton tone="gold" onClick={() => purchase(previewItem)}><CoinIcon /> Confirm purchase</AppButton> : <AppButton tone="green" onClick={() => { setOverlay(null); go("missions"); }}>Earn more</AppButton>}<button className="text-button" onClick={() => setOverlay("preview")}>Not now</button></Modal>}
+    {overlay === "confirm" && previewItem && <Modal className="confirm-modal">
+      <div className="confirm-art">
+        {shopCategory === "chests" ? <ChestIcon gold /> : shopCategory === "powerups" ? <PowerIcon kind={previewItem.id} /> : shopCategory === "jars" ? <JarIcon kind={previewItem.preview} /> : shopCategory === "backgrounds" ? <div className="confirm-bg-thumb"><SceneArt scene={previewItem.preview} /></div> : <FruitIcon level={5} skin={shopCategory === "fruit" ? previewItem.id : save.equipped.fruit} />}
+      </div>
+      <h2>Bring it home?</h2>
+      <p>{save.coins >= previewItem.price ? `Buy ${previewItem.name} for ${previewItem.price} coins?` : `You are ${previewItem.price - save.coins} coins short.`}</p>
+      {save.coins >= previewItem.price ? (
+        <AppButton tone="gold" onClick={() => purchase(previewItem)} className="confirm-purchase-btn">
+          <CoinIcon /> Confirm purchase
+        </AppButton>
+      ) : (
+        <AppButton tone="green" onClick={() => { setOverlay(null); go("missions"); }}>Earn more</AppButton>
+      )}
+      <button className="text-button" onClick={() => setOverlay("preview")}>Not now</button>
+    </Modal>}
 
     {overlay === "chest" && chestReward && <Modal className="chest-modal"><div className="chest-opening"><ChestIcon gold /><span className="chest-rays" /></div><small>CHEST OPENED</small><h2>{chestReward.item?.name}</h2>{chestReward.item && <FruitIcon level={6} skin={chestReward.item.id} />}{chestReward.coins ? <p>Duplicate converted to <strong>{chestReward.coins} coins</strong>.</p> : <p>A new fruit skin joined your collection.</p>}<AppButton tone="green" onClick={() => setOverlay(null)}>Lovely!</AppButton></Modal>}
 
@@ -711,7 +751,7 @@ function App() {
         <h3>4. Permissions</h3>
         <p>Only VIBRATE (tactile feedback on fruit merges) and WAKE_LOCK (keeps screen active during gameplay) are used.</p>
         <h3>5. Contact</h3>
-        <p>If you have any questions, contact us at <strong>support@orchardlygames.com</strong>.</p>
+        <p>If you have any questions, contact us at <strong>sajawal0005@gmail.com</strong>.</p>
       </div>
       <AppButton tone="green" onClick={() => setOverlay(null)}>I Understand</AppButton>
     </Modal>}

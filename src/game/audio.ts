@@ -3,11 +3,11 @@ type SoundName = "drop" | "merge" | "combo" | "coin" | "purchase" | "unlock" | "
 export function haptic(type: "light" | "medium" | "heavy" | "success" | "warning" = "light") {
   if (typeof navigator === "undefined" || !navigator.vibrate) return;
   try {
-    if (type === "light") navigator.vibrate(22);
-    else if (type === "medium") navigator.vibrate(40);
-    else if (type === "heavy") navigator.vibrate([45, 30, 45]);
-    else if (type === "success") navigator.vibrate([30, 30, 50]);
-    else if (type === "warning") navigator.vibrate([60, 40, 60]);
+    if (type === "light") navigator.vibrate(30);
+    else if (type === "medium") navigator.vibrate(50);
+    else if (type === "heavy") navigator.vibrate([65, 35, 65]);
+    else if (type === "success") navigator.vibrate([45, 30, 75]);
+    else if (type === "warning") navigator.vibrate([85, 45, 85]);
   } catch {
     // Vibration not supported or allowed
   }
@@ -17,9 +17,58 @@ class OrchardAudio {
   private ctx: AudioContext | null = null;
   private musicTimer: number | null = null;
   private musicMasterGain: GainNode | null = null;
+  private isAppPaused = false;
   sound = true;
   music = true;
   vibration = true;
+
+  constructor() {
+    if (typeof document !== "undefined") {
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "hidden") {
+          this.onAppPause();
+        } else if (document.visibilityState === "visible") {
+          this.onAppResume();
+        }
+      });
+      window.addEventListener("pagehide", () => this.onAppPause());
+      window.addEventListener("pageshow", () => this.onAppResume());
+      // Capacitor App plugin: pause music on device lock or app minimize
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const capApp = (window as any)?.Capacitor?.Plugins?.App;
+        if (capApp?.addListener) {
+          capApp.addListener("appStateChange", (state: { isActive: boolean }) => {
+            if (!state.isActive) this.onAppPause();
+            else this.onAppResume();
+          });
+        }
+      } catch {
+        // Capacitor not available in web context
+      }
+    }
+  }
+
+  private onAppPause() {
+    this.isAppPaused = true;
+    this.stopMusic();
+    if (this.ctx && this.ctx.state === "running") {
+      void this.ctx.suspend();
+    }
+  }
+
+  private onAppResume() {
+    this.isAppPaused = false;
+    if (this.ctx && this.ctx.state === "suspended") {
+      void this.ctx.resume().then(() => {
+        if (this.music && this.musicTimer === null && !this.isAppPaused) {
+          this.startMusic();
+        }
+      });
+    } else if (this.music && this.musicTimer === null && !this.isAppPaused) {
+      this.startMusic();
+    }
+  }
 
   configure(sound: boolean, music: boolean, vibration = true) {
     this.sound = sound;
@@ -28,13 +77,14 @@ class OrchardAudio {
     if (!music) {
       this.stopMusic();
     } else {
-      if (this.ctx && this.musicTimer === null) {
+      if (this.ctx && this.musicTimer === null && !this.isAppPaused) {
         this.startMusic();
       }
     }
   }
 
   unlock() {
+    if (this.isAppPaused) return;
     try {
       const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (!this.ctx && AudioCtx) {
@@ -42,11 +92,11 @@ class OrchardAudio {
       }
       if (this.ctx && this.ctx.state === "suspended") {
         void this.ctx.resume().then(() => {
-          if (this.music && this.musicTimer === null) {
+          if (this.music && this.musicTimer === null && !this.isAppPaused) {
             this.startMusic();
           }
         });
-      } else if (this.ctx && this.music && this.musicTimer === null) {
+      } else if (this.ctx && this.music && this.musicTimer === null && !this.isAppPaused) {
         this.startMusic();
       }
     } catch {
@@ -138,9 +188,9 @@ class OrchardAudio {
 
     if (!this.musicMasterGain) {
       this.musicMasterGain = this.ctx.createGain();
-      this.musicMasterGain.gain.value = 0.22;
       this.musicMasterGain.connect(this.ctx.destination);
     }
+    this.musicMasterGain.gain.value = 0.136;
 
     // Cheerful, uplifting pentatonic melody + chords
     // C - G - Am - F progression

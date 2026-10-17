@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: "com.yourname.orchardly",
+  appId: "com.sajawal.orchardly",
   appName: "Orchardly: Fruit Merge",
   webDir: "dist",
 };

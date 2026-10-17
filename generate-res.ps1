@@ -15,7 +15,7 @@ function Resize-Image($srcPath, $destPath, $w, $h) {
     Write-Host "Created: $destPath"
 }
 
-$iconSrc = (Resolve-Path "images\app_icon.png").Path
+$iconSrc = (Resolve-Path "images\app_icon.jpg").Path
 $splashSrc = (Resolve-Path "images\splash_img.png").Path
 $resDir = (Resolve-Path "android\app\src\main\res").Path
 

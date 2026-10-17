@@ -1,4 +1,4 @@
-package com.yourname.orchardly;
+package com.sajawal.orchardly;
 
 import android.os.Bundle;
 import android.view.WindowManager;

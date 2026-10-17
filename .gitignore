@@ -32,3 +32,8 @@ android/capacitor-cordova-android-plugins/build
 android/.idea
 android/local.properties
 *.iml
+
+# Release signing - NEVER commit keystore to version control
+*.keystore
+*.jks
+android/key.properties

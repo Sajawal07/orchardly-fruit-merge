@@ -2,7 +2,7 @@ import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import * as Matter from "matter-js";
 import { FRUITS } from "./config";
 import type { LevelConfig, RunResult } from "./types";
-import { audio } from "./audio";
+import { audio, haptic } from "./audio";
 import { bodyData, drawCanvasFruit, drawJar, drawRock, type FloatText, type Particle } from "./renderer";
 
 export type GameStats = {
@@ -196,11 +196,11 @@ export const GameCanvas = forwardRef<GameHandle, Props>(function GameCanvas(
       initial.height = rect.height;
       initial.scale = Math.max(.55, Math.min(1.35, rect.width / 390));
       initial.bounds = {
-        left: rect.width * .07,
-        right: rect.width * .93,
-        top: rect.height * .16,
-        bottom: rect.height * .77,
-        danger: rect.height * .28,
+        left: rect.width * .075,
+        right: rect.width * .925,
+        top: rect.height * .185,
+        bottom: rect.height * .78,
+        danger: rect.height * .30,
       };
       if (previousBounds.right > previousBounds.left && previousBounds.bottom > previousBounds.top) {
         const sizeRatio = initial.scale / previousScale;
@@ -300,7 +300,11 @@ export const GameCanvas = forwardRef<GameHandle, Props>(function GameCanvas(
         if (mode === "level" && level?.goal.type === "merge" && sourceLevel === level.goal.fruit) initial.goalProgress += 1;
         initial.texts.push({ x, y, text: `+${points}${initial.combo > 1 ? `  x${initial.combo}` : ""}`, life: 1, color: initial.combo > 1 ? "#ffdf55" : "#ffffff" });
         audio.play(initial.combo > 2 ? "combo" : "merge", sourceLevel);
-        if (vibrationRef.current && sourceLevel >= 5 && navigator.vibrate) navigator.vibrate(sourceLevel >= 8 ? 45 : 20);
+        if (vibrationRef.current) {
+          if (initial.combo > 2) haptic("success");
+          else if (sourceLevel >= 6) haptic("heavy");
+          else haptic("medium");
+        }
         if (sourceLevel >= 8) initial.shake = Math.max(initial.shake, sourceLevel - 4);
         emitStats();
         checkWin(initial, mode, level);

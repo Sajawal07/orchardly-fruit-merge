@@ -51,7 +51,7 @@ export function FruitIcon({ level, skin = "classic", className = "", worried = f
 }
 
 export function CoinIcon({ className = "", style }: IconProps) {
-  return <svg className={className} style={style} viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="coin" x2="0" y2="1"><stop stopColor="#fff38a"/><stop offset=".5" stopColor="#ffc83d"/><stop offset="1" stopColor="#e99520"/></linearGradient></defs><circle cx="32" cy="32" r="27" fill="url(#coin)" stroke="#b86c1b" strokeWidth="4"/><circle cx="32" cy="32" r="20" fill="none" stroke="#ffe879" strokeWidth="3"/><path d="M36 16 l-3 10 h9 l-14 22 l3-13 h-9z" fill="#fff2a8" stroke="#cb7c20" strokeWidth="2"/></svg>;
+  return <svg className={`coin-icon${className ? ` ${className}` : ""}`} style={style} viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="coin" x2="0" y2="1"><stop stopColor="#fff38a"/><stop offset=".5" stopColor="#ffc83d"/><stop offset="1" stopColor="#e99520"/></linearGradient></defs><circle cx="32" cy="32" r="27" fill="url(#coin)" stroke="#b86c1b" strokeWidth="4"/><circle cx="32" cy="32" r="20" fill="none" stroke="#ffe879" strokeWidth="3"/><path d="M36 16 l-3 10 h9 l-14 22 l3-13 h-9z" fill="#fff2a8" stroke="#cb7c20" strokeWidth="2"/></svg>;
 }
 
 export function StarIcon({ filled = true, className = "" }: IconProps & { filled?: boolean }) {
